@@ -1,7 +1,8 @@
 <script setup>
-import {ref} from "vue";
+import {computed, ref} from "vue";
 
 const heroTitle = 'Take the quiz, get a discount!';
+
 const quizData = ref([
   {
     question: '1Dorem orem ipsum dolor sit amet, consectetur hola?',
@@ -54,7 +55,11 @@ const quizData = ref([
       },
     ]
   },
-])
+]);
+const activeIdx = ref(0);
+const activeStep = computed(()=>{
+  return quizData.value[activeIdx.value];
+})
 </script>
 
 <template>
@@ -62,12 +67,10 @@ const quizData = ref([
     <h1 class="title">{{heroTitle}}</h1>
     <div class="quizBox">
       <div v-if="quizData.length !== 0">
-        <template v-for="(item, i) in quizData">
-          <h2 class="question">{{i+1}}. {{item.question}}</h2>
-          <ul class="answerOptions" v-for="answer in item.answers">
-            <li class="answerOption">{{answer.answer}}</li>
+          <h2 class="question">{{activeIdx + 1}}. {{activeStep.question}}</h2>
+          <ul class="answerOptions" v-for="item in activeStep.answers">
+            <li class="answerOption">{{item.answer}}</li>
           </ul>
-        </template>
       </div>
       <div v-else class="quizEmpty"><strong>Quiz is empty ):</strong></div>
       <div class="buttons">
