@@ -59,6 +59,22 @@ const quizData = ref([
 const activeIdx = ref(0);
 const activeStep = computed(()=>{
   return quizData.value[activeIdx.value];
+});
+
+const nextStep = computed(()=>{
+  if (activeIdx.value !== quizData.value.length - 1){
+    activeIdx.value++
+  }
+});
+const prevStep = computed(()=>{
+  if (activeIdx.value !== 0)activeIdx.value--;
+});
+
+const prevDisabled = computed(()=>{
+  return activeIdx.value === 0;
+})
+const nextDisabled = computed(()=>{
+  return activeIdx.value === quizData.value.length - 1;
 })
 </script>
 
@@ -68,15 +84,16 @@ const activeStep = computed(()=>{
     <div class="quizBox">
       <div v-if="quizData.length !== 0">
           <h2 class="question">{{activeIdx + 1}}. {{activeStep.question}}</h2>
-          <ul class="answerOptions" v-for="item in activeStep.answers">
+          <ul class="answerOptions" v-for="(item, i) in activeStep.answers" :key="i">
             <li class="answerOption">{{item.answer}}</li>
           </ul>
       </div>
       <div v-else class="quizEmpty"><strong>Quiz is empty ):</strong></div>
       <div class="buttons">
-        <button class="btn" disabled>Previous</button>
+        <button class="btn" @click="prevStep" :disabled="prevDisabled">Previous</button>
         <button class="btn">Submit</button>
-        <button class="btn">Next</button>
+        <button v-if="nextDisabled" class="btn">Complete</button>
+        <button v-else class="btn" @click="nextStep">Next</button>
       </div>
     </div>
   </div>
@@ -135,7 +152,7 @@ h2{
 }
 .btn{
   font-weight: 500;
-  min-width: 100px;
+  min-width: 110px;
   padding: 8px 14px;
   border: 1px solid #210404;
   border-radius: 18px;
