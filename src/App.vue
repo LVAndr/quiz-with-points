@@ -3,6 +3,8 @@ import {computed, ref} from "vue";
 
 const heroTitle = 'Take the quiz, get a discount!';
 
+const quizPoints = ref(0);
+const discount = ref(0);
 const quizData = ref([
   {
     question: '1Dorem orem ipsum dolor sit amet, consectetur hola?',
@@ -75,11 +77,20 @@ const prevDisabled = computed(()=>{
 })
 const nextDisabled = computed(()=>{
   return activeIdx.value === quizData.value.length - 1;
+});
+
+const complete = ref(false);
+const completeQuiz = computed(()=>{
+  if (complete.value === false) complete.value = true;
+})
+const repeatQuiz = computed(()=>{
+  if (complete.value === true) complete.value = false;
+  activeIdx.value = 0;
 })
 </script>
 
 <template>
-  <div class="quiz">
+  <div class="quiz" v-if="!complete">
     <h1 class="title">{{heroTitle}}</h1>
     <div class="quizBox">
       <div v-if="quizData.length !== 0">
@@ -92,12 +103,22 @@ const nextDisabled = computed(()=>{
       <div class="buttons">
         <button class="btn" @click="prevStep" :disabled="prevDisabled">Previous</button>
         <button class="btn">Submit</button>
-        <button v-if="nextDisabled" class="btn">Complete</button>
+        <button v-if="nextDisabled" class="btn" @click="completeQuiz">Complete</button>
         <button v-else class="btn" @click="nextStep">Next</button>
       </div>
     </div>
   </div>
+  <div class="quiz" v-else>
+    <h1 class="title">Quiz is complete!</h1>
+    <div class="quizBox">
+      <strong>Your points: {{quizPoints}}</strong>
+      <strong>Your discount: {{discount}}%</strong>
+      <div class="buttons">
+        <button class="btn" @click="repeatQuiz">Repeat</button>
+      </div>
+    </div>
 
+  </div>
 </template>
 
 <style scoped>
@@ -105,7 +126,7 @@ h1{
   font-weight: 800;
   font-size: 34px;
   margin-top: 30px;
-  margin-bottom: 30px;
+  margin-bottom: 60px;
 }
 .title{
   text-align: center;
@@ -123,7 +144,7 @@ h2{
   margin: 0 auto;
   max-width: 600px;
   min-height: 200px;
-  background-color: #fff;
+  background-color: #b9c0cb;
 }
 .quizEmpty{
   text-align: center;
@@ -159,21 +180,22 @@ h2{
   transition: all .2s;
 }
 .btn:disabled{
-  border: 1px solid #b2b2b2;
-  color: #b2b2b2;
+  border: 1px solid #858585;
+  color: #858585;
 }
 .btn:disabled:hover{
   background-color: transparent;
 }
 .btn:disabled:active{
-  color: #b2b2b2;
+  color: #858585;
+  border-color: #858585;
+  cursor: default;
 }
 .btn:hover{
-  background-color: #b9c0cb;
+  background-color: #fff;
 }
 .btn:active{
   color: #ED2224;
   border-color: #ED2224;
-  background-color: #fff;
 }
 </style>
