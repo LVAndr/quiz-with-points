@@ -8,52 +8,61 @@ const discount = ref(0);
 const quizData = ref([
   {
     question: '1Dorem orem ipsum dolor sit amet, consectetur hola?',
-    answers: [
+    options: [
       {
         answer: 'Lorem ipsum dolor sit. 1',
-        point: 100
+        point: 100,
+        selected: false
       },
       {
         answer: 'Lorem ipsum dolor sit. 1.2',
-        point: 200
+        point: 200,
+        selected: false
       },
       {
         answer: 'Lorem ipsum dolor sit. 1.3',
-        point: 250
+        point: 250,
+        selected: false
       },
     ]
   },
   {
     question: '2Dorem orem ipsum dolor sit amet, consectetur hola?',
-    answers: [
+    options: [
       {
         answer: 'Lorem ipsum dolor sit. 2',
-        point: 150
+        point: 150,
+        selected: false
       },
       {
         answer: 'Lorem ipsum dolor sit. 2.2',
-        point: 220
+        point: 22,
+        selected: false
       },
       {
         answer: 'Lorem ipsum dolor sit. 2.3',
-        point: 330
+        point: 330,
+        selected: false
       },
     ]
   },
   {
     question: '3Dorem orem ipsum dolor sit amet, consectetur hola?',
-    answers: [
+    options: [
       {
         answer: 'Lorem ipsum dolor sit. 3',
-        point: 180
+        point: 180,
+        selected: false
       },
       {
         answer: 'Lorem ipsum dolor sit. 3.2',
-        point: 230
+        point: 230,
+        selected: false
       },
       {
         answer: 'Lorem ipsum dolor sit. 3.3',
-        point: 270
+        point: 270,
+        selected: false
       },
     ]
   },
@@ -79,6 +88,19 @@ const nextDisabled = computed(()=>{
   return activeIdx.value === quizData.value.length - 1;
 });
 
+const getCurrentQuestion = (item) => {
+  quizData.value[activeIdx.value].options.forEach((option) => {
+    if (option.selected === true){
+      quizPoints.value-= option.point;
+      option.selected = false;
+    }
+  })
+  item.selected = true;
+  quizPoints.value+= item.point;
+  console.log(item)
+  console.log('Points:', quizPoints.value)
+};
+
 const complete = ref(false);
 const completeQuiz = computed(()=>{
   if (complete.value === false) complete.value = true;
@@ -86,6 +108,12 @@ const completeQuiz = computed(()=>{
 const repeatQuiz = computed(()=>{
   if (complete.value === true) complete.value = false;
   activeIdx.value = 0;
+  quizPoints.value = 0;
+  for (let i = 0; i < quizData.value.length; i++) {
+    quizData.value[i].options.forEach(option => {
+      if (option.selected === true)option.selected = false;
+    }
+    )}
 })
 </script>
 
@@ -95,14 +123,23 @@ const repeatQuiz = computed(()=>{
     <div class="quizBox">
       <div v-if="quizData.length !== 0">
           <h2 class="question">{{activeIdx + 1}}. {{activeStep.question}}</h2>
-          <ul class="answerOptions" v-for="(item, i) in activeStep.answers" :key="i">
-            <li class="answerOption">{{item.answer}}</li>
+          <ul class="answerOptions">
+            <li
+                :class="`answerOption ${
+                  item.selected === true ? 'active' : ''
+                }`"
+                data-selected="false"
+                v-for="(item, i) in activeStep.options"
+                :key="i"
+                @click="getCurrentQuestion(item, i)"
+            >
+              {{item.answer}}
+            </li>
           </ul>
       </div>
       <div v-else class="quizEmpty"><strong>Quiz is empty ):</strong></div>
       <div class="buttons">
         <button class="btn" @click="prevStep" :disabled="prevDisabled">Previous</button>
-        <button class="btn">Submit</button>
         <button v-if="nextDisabled" class="btn" @click="completeQuiz">Complete</button>
         <button v-else class="btn" @click="nextStep">Next</button>
       </div>
@@ -143,6 +180,7 @@ h2{
   padding: 40px 35px;
   margin: 0 auto;
   max-width: 600px;
+  width: 100%;
   min-height: 200px;
   background-color: #b9c0cb;
 }
@@ -154,6 +192,8 @@ h2{
   margin: 25px auto;
 }
 .answerOption{
+  display: block;
+  padding: 8px 12px;
   color: #ac2b3f;
   font-weight: 500;
   font-size: 20px;
@@ -163,7 +203,7 @@ h2{
   margin-bottom: 15px;
 }
 .answerOption.active{
-  color: #ED2224;
+  background-color: #fff;
 }
 .buttons{
   display: flex;
