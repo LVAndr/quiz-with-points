@@ -67,6 +67,20 @@ const quizData = ref([
     ]
   },
 ]);
+const getDiscount = () => {
+  if (quizPoints.value === 0) {
+    discount.value = 0;
+  } else if (quizPoints.value >= 501) {
+    discount.value = 25;
+  } else if (quizPoints.value <= 500 && quizPoints.value > 400) {
+    discount.value = 15;
+  } else if (quizPoints.value <= 400 && quizPoints.value > 100) {
+    discount.value = 10;
+  } else if (quizPoints.value <= 100) {
+    discount.value = 5;
+  }
+  return discount.value;
+};
 const activeIdx = ref(0);
 const activeStep = computed(()=>{
   return quizData.value[activeIdx.value];
@@ -115,6 +129,7 @@ const repeatQuiz = computed(()=>{
     }
     )}
 })
+
 </script>
 
 <template>
@@ -131,7 +146,7 @@ const repeatQuiz = computed(()=>{
                 data-selected="false"
                 v-for="(item, i) in activeStep.options"
                 :key="i"
-                @click="getCurrentQuestion(item, i)"
+                @click="getCurrentQuestion(item)"
             >
               {{item.answer}}
             </li>
@@ -140,7 +155,7 @@ const repeatQuiz = computed(()=>{
       <div v-else class="quizEmpty"><strong>Quiz is empty ):</strong></div>
       <div class="buttons">
         <button class="btn" @click="prevStep" :disabled="prevDisabled">Previous</button>
-        <button v-if="nextDisabled" class="btn" @click="completeQuiz">Complete</button>
+        <button v-if="nextDisabled" class="btn" @click="completeQuiz, getDiscount()">Complete</button>
         <button v-else class="btn" @click="nextStep">Next</button>
       </div>
     </div>
