@@ -73,16 +73,21 @@ const quizData = ref([
   },
 ]);
 const getDiscount = () => {
-  if (quizPoints.value === 0) {
-    discount.value = 0;
-  } else if (quizPoints.value >= 501) {
-    discount.value = 25;
-  } else if (quizPoints.value <= 500 && quizPoints.value > 400) {
-    discount.value = 15;
-  } else if (quizPoints.value <= 400 && quizPoints.value > 100) {
-    discount.value = 10;
-  } else if (quizPoints.value <= 100) {
-    discount.value = 5;
+  switch (true) {
+    case (quizPoints.value >= 501):
+      discount.value = 25;
+      break;
+    case (quizPoints.value > 400):
+      discount.value = 15;
+      break;
+    case (quizPoints.value > 100):
+      discount.value = 10;
+      break;
+    case (quizPoints.value > 0): // Тут охоплюються значення від 1 до 100
+      discount.value = 5;
+      break;
+    default:
+      discount.value = 0;
   }
   return discount.value;
 };
