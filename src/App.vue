@@ -7,60 +7,65 @@ const quizPoints = ref(0);
 const discount = ref(0);
 const quizData = ref([
   {
-    question: '1Dorem orem ipsum dolor sit amet, consectetur hola?',
+    question: ' Which chips flavor do you prefer?',
     options: [
       {
-        answer: 'Lorem ipsum dolor sit. 1',
+        answer: 'Cheese',
+        point: 50,
+        selected: false
+      },
+      {
+        answer: 'Sour Cream & Onion',
+        point: 60,
+        selected: false
+      },
+      {
+        answer: 'Barbecue',
+        point: 70,
+        selected: false
+      },
+    ]
+  },
+  {
+    question: 'How often do you buy chips?',
+    options: [
+      {
+        answer: 'Once a month',
         point: 100,
         selected: false
       },
       {
-        answer: 'Lorem ipsum dolor sit. 1.2',
-        point: 200,
-        selected: false
-      },
-      {
-        answer: 'Lorem ipsum dolor sit. 1.3',
-        point: 250,
-        selected: false
-      },
-    ]
-  },
-  {
-    question: '2Dorem orem ipsum dolor sit amet, consectetur hola?',
-    options: [
-      {
-        answer: 'Lorem ipsum dolor sit. 2',
+        answer: 'Once a week',
         point: 150,
         selected: false
       },
       {
-        answer: 'Lorem ipsum dolor sit. 2.2',
-        point: 22,
-        selected: false
-      },
-      {
-        answer: 'Lorem ipsum dolor sit. 2.3',
-        point: 330,
+        answer: 'Several times a week',
+        point: 220,
         selected: false
       },
     ]
   },
   {
-    question: '3Dorem orem ipsum dolor sit amet, consectetur hola?',
+    question: 'What size of chips package do you usually choose?',
     options: [
       {
-        answer: 'Lorem ipsum dolor sit. 3',
-        point: 180,
+        answer: 'Small (up to 50g)',
+        point: 130,
         selected: false
       },
       {
-        answer: 'Lorem ipsum dolor sit. 3.2',
-        point: 230,
+        answer: 'Medium (50-150g)',
+        point: 190,
         selected: false
       },
       {
-        answer: 'Lorem ipsum dolor sit. 3.3',
+        answer: 'Large (over 150g)',
+        point: 250,
+        selected: false
+      },
+      {
+        answer: 'Salt',
         point: 270,
         selected: false
       },
@@ -155,7 +160,7 @@ const repeatQuiz = computed(()=>{
       <div v-else class="quizEmpty"><strong>Quiz is empty ):</strong></div>
       <div class="buttons">
         <button class="btn" @click="prevStep" :disabled="prevDisabled">Previous</button>
-        <button v-if="nextDisabled" class="btn" @click="completeQuiz, getDiscount()">Complete</button>
+        <button v-if="nextDisabled" class="btn" @click="completeQuiz; getDiscount()">Complete</button>
         <button v-else class="btn" @click="nextStep">Next</button>
       </div>
     </div>
