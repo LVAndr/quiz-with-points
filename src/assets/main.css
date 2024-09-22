@@ -27,6 +27,7 @@ button{
 }
 body{
     font-family: 'Poppins', 'Arial', sans-serif;
+    font-size: 18px;
     margin: 0 auto;
     background: #fff;
     color: #210404;

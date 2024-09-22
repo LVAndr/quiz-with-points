@@ -5,6 +5,25 @@ const heroTitle = 'Take the quiz, get a discount!';
 
 const quizPoints = ref(0);
 const discount = ref(0);
+const discountsData = ref([
+  {
+    discountValue: 5,
+    promoCode: 'CHPS5'
+  },
+  {
+    discountValue: 10,
+    promoCode: 'CHPS10'
+  },
+  {
+    discountValue: 15,
+    promoCode: 'CHPS15'
+  },
+  {
+    discountValue: 25,
+    promoCode: 'CHPS25'
+  }
+])
+const promoCode = ref('')
 const quizData = ref([
   {
     question: ' Which chips flavor do you prefer?',
@@ -24,6 +43,11 @@ const quizData = ref([
         point: 70,
         selected: false
       },
+      {
+        answer: 'Salt',
+        point: 270,
+        selected: false
+      }
     ]
   },
   {
@@ -63,12 +87,7 @@ const quizData = ref([
         answer: 'Large (over 150g)',
         point: 250,
         selected: false
-      },
-      {
-        answer: 'Salt',
-        point: 270,
-        selected: false
-      },
+      }
     ]
   },
 ]);
@@ -76,6 +95,7 @@ const getDiscount = () => {
   switch (true) {
     case (quizPoints.value >= 501):
       discount.value = 25;
+
       break;
     case (quizPoints.value > 400):
       discount.value = 15;
@@ -89,7 +109,14 @@ const getDiscount = () => {
     default:
       discount.value = 0;
   }
-  return discount.value;
+  if (discount.value > 0){
+    discountsData.value.forEach(e => {
+      if (discount.value === e.discountValue){
+        promoCode.value = e.promoCode;
+      }
+    })
+  }
+  return {discount: discount.value, promocode: promoCode.value}
 };
 const activeIdx = ref(0);
 const activeStep = computed(()=>{
@@ -173,10 +200,13 @@ const repeatQuiz = computed(()=>{
   <div class="quiz" v-else>
     <h1 class="title">Quiz is complete!</h1>
     <div class="quizBox">
-      <strong>Your points: {{quizPoints}}</strong>
-      <strong>Your discount: {{discount}}%</strong>
+      <div class="result">
+        <strong>Your points: {{quizPoints}}</strong>
+        <strong>Your discount: {{discount}}%</strong>
+        <strong v-if="discount> 0" class="promocode">Get your promo code: <span class="promocode-value">{{promoCode}}</span></strong>
+      </div>
       <div class="buttons">
-        <button class="btn" @click="repeatQuiz">Repeat</button>
+        <button class="btn btn-repeat" @click="repeatQuiz">Repeat</button>
       </div>
     </div>
 
@@ -229,6 +259,32 @@ h2{
 }
 .answerOption.active{
   background-color: #fff;
+}
+.result{
+  font-size: 18px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+.promocode{
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  line-height: 2;
+  margin: 0 auto;
+}
+.promocode-value{
+  margin-bottom: 20px;
+  color: #ED2224;
+  text-transform: uppercase;
+  font-weight: 800;
+  background-color: #fff;
+  padding: 5px;
+}
+.btn-repeat{
+  margin: 0 auto;
 }
 .buttons{
   display: flex;
